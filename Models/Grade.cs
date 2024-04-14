@@ -13,7 +13,5 @@ public partial class Grade
 
     public virtual Course CoursecodeNavigation { get; set; } = null!;
 
-    public Course Course { get; set; };
-
     public virtual Student Student { get; set; } = null!;
 }
