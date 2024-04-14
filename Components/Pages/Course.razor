@@ -1,0 +1,54 @@
+﻿@page "/course"
+@using Microsoft.EntityFrameworkCore
+@rendermode InteractiveServer
+
+<PageTitle>Course</PageTitle>
+
+<div class="row">
+    <div class="col">
+        <h1>Choose course</h1>
+        @foreach (var c in _courses) {
+            <button @onclick="() => NavToCourse(c.Coursecode)" class="btn btn-primary mb-2">@c.Coursecode</button>
+        }
+    </div>
+
+    <div class="col">
+        @if (courses != null) {
+            <div class="card">
+                <div class="card-header">
+                    Results
+                </div>
+                <div class="card-body">
+                    @foreach (var a in courses) {
+                        <div>
+                            <p>Student: @a.Student.Studentname</p>
+                            <p>Grade: @a.Grade.Grade1</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private List<Models.StudentGrade> courses;
+
+    private List<Models.Course> _courses = new List<Models.Course>();
+
+    protected override async Task OnInitializedAsync() {
+        using var dat154Cont = new Models.Dat154Context();
+        _courses = await dat154Cont.Courses.ToListAsync();
+    }
+
+    private async Task NavToCourse(string course) {
+        Console.WriteLine("Gathering courses");
+        using var dat154Cont = new Models.Dat154Context();
+        var searchResult = await dat154Cont.InCourse(course);
+
+        if (searchResult != null) {
+            courses = searchResult;
+            Console.WriteLine("Gathered courses");
+        }
+    }
+}

@@ -1,0 +1,61 @@
+﻿@page "/"
+@using Microsoft.EntityFrameworkCore
+@rendermode InteractiveServer
+
+<PageTitle>Home</PageTitle>
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1>The student searcher</h1>
+            <fieldset>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Search for student" @bind="studName" @onkeydown="KeyPress" />
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="button" @onclick="SearchStudents">Search</button>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+    @if(students != null) {
+        <div class="row">
+            <div class="col">
+                <br />
+                <h2>Search results:</h2>
+                @if(students.Count == 0) {
+                    <p>No results</p>
+                } else {
+                    <ul class="list-group">
+                        @foreach(var s in students) {
+                            <li class="list-group-item">@s.Studentname</li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private string studName;
+    private List<Models.Student> students;
+
+    private async Task SearchStudents() {
+        Console.WriteLine("Gathering students");
+        using var dat154Cont = new Models.Dat154Context();
+        var searchResult = await dat154Cont.SearchStudent(studName);
+
+        if(searchResult != null) {
+            students = searchResult;
+            Console.WriteLine("Gathered students");
+        }
+    }
+
+    private async Task KeyPress(KeyboardEventArgs e) {
+        if(e.Key == "Enter") {
+            await SearchStudents();
+        }
+    }
+}

@@ -1,0 +1,41 @@
+﻿@page "/grade"
+@using Microsoft.EntityFrameworkCore
+@rendermode InteractiveServer
+
+<PageTitle>Grade</PageTitle>
+
+<h1>Grades</h1>
+
+@{ var grades = new[] { "", "A", "B", "C", "D", "E", "F"}; }
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+
+        </div>
+    </div>
+
+    @if(gradesAbove != null) {
+        
+    }
+</div>
+
+@code {
+    List<Models.StudentGradeCourse> gradesAbove;
+    string grade;
+
+    private async Task GetGrades() {
+        if(grade == null || string.IsNullOrWhiteSpace(grade)) {
+            return;
+        }
+
+        Console.WriteLine("Gathering grades above " + grade);
+        using var dat154Cont = new Models.Dat154Context();
+        var searchResult = await dat154Cont.AboveGrade(grade);
+
+        if(searchResult != null) {
+            gradesAbove = searchResult;
+            Console.WriteLine("Gathered grades");
+        }
+    }
+}
