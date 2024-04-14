@@ -122,5 +122,12 @@ public partial class Dat154Context : DbContext
             .ToListAsync();
     }
 
-    
+    public async Task<List<StudentGradeCourse>> AboveGrade(string grade) {
+        return await Grades
+            .Include(g => g.Student)
+            .Include(g => g.CoursecodeNavigation)
+            .Where(g => string.Compare(g.Grade1, grade) <= 0)
+            .Select(g => new StudentGradeCourse { Student = g.Student, Grade = g, Course = g.CoursecodeNavigation })
+            .ToListAsync();
+    }
 }

@@ -1,0 +1,67 @@
+﻿@page "/grade"
+@using Microsoft.EntityFrameworkCore
+@rendermode InteractiveServer
+
+<PageTitle>Grade</PageTitle>
+
+<h1>Grades</h1>
+
+@{ var grades = new[] { "", "A", "B", "C", "D", "E", "F"}; }
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <label for="gradeSelect" class="form-label">Choose grade</label>
+            <select id="gradeSelect" name="gradeSelect" class="form-select" @bind="grade">
+                @foreach(var g in grades) {
+                    <option value="@g">@g</option>
+                }
+            </select>
+        </div>
+        <div class="col">
+            <label>&nbsp;</label><br>
+            <button type="button" class="btn btn-primary" @onclick="GetGrades">Get grades</button>
+        </div>
+    </div>
+
+    @if(gradesAbove != null) {
+        <div class="row">
+            <div class="col">
+                <h2>Results</h2>
+                @if(gradesAbove.Count == 0) {
+                    <p>No grades were found</p>
+                } else {
+                    @foreach(var g in gradesAbove) {
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="card-text">Student: @g.Student.Studentname</p>
+                                <p class="card-text">Grade: @g.Grade.Grade1</p>
+                                <p class="card-text">Course: @g.Course.Coursename</p>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    List<Models.StudentGradeCourse> gradesAbove;
+    string grade;
+
+    private async Task GetGrades() {
+        if(grade == null || string.IsNullOrWhiteSpace(grade)) {
+            return;
+        }
+
+        Console.WriteLine("Gathering grades above " + grade);
+        using var dat154Cont = new Models.Dat154Context();
+        var searchResult = await dat154Cont.AboveGrade(grade);
+
+        if(searchResult != null) {
+            gradesAbove = searchResult;
+            Console.WriteLine("Gathered grades");
+        }
+    }
+}
