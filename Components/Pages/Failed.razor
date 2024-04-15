@@ -1,0 +1,38 @@
+﻿@page "/failed"
+@using Microsoft.EntityFrameworkCore
+@rendermode InteractiveServer
+
+<PageTitle>Failed</PageTitle>
+
+<div class="container">
+    <fieldset>
+        <legend>Failed students</legend>
+        @if(failed != null && failed.Any()) {
+            @foreach(var f in failed) {
+                <div class="border">
+                    <p>Student: @f.Student.Studentname</p>
+                    <p>Grade: @f.Grade.Grade1</p>
+                    <p>Course: @f.Course.Coursename</p>
+                </div>
+            }
+        }
+    </fieldset>
+</div>
+
+@code {
+    List<Models.StudentGradeCourse> failed;
+
+    protected override async Task OnInitializedAsync() {
+        using var dat154Cont = new Models.Dat154Context();
+        failed = await dat154Cont.Grades
+            .Include(g => g.CoursecodeNavigation)
+            .Include(g => g.Student)
+            .Where(g => g.Grade1.Equals("F"))
+            .Select(g => new Models.StudentGradeCourse {
+                Student = g.Student,
+                Grade = g,
+                Course = g.CoursecodeNavigation
+            })
+            .ToListAsync();
+    }
+}
