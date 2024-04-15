@@ -8,7 +8,7 @@
     <div class="col">
         <h1>Choose course</h1>
         @foreach (var c in _courses) {
-            <button @onclick="() => NavToCourse(c.Coursecode)" class="btn btn-primary mb-2">@c.Coursecode</button>
+            <button @onclick="() => NavToCourse(c.Coursecode)" class="btn btn-primary">@c.Coursecode</button>
         }
     </div>
 
