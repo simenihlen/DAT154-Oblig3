@@ -114,13 +114,21 @@ public partial class Dat154Context : DbContext
         return await Courses.Where(s => s.Coursename.Contains(course)).ToListAsync();
     }
 
-    public async Task<List<StudentGrade>> InCourse(string course) {
+    public async Task<List<Student>> InCourse(string course) {
         return await Grades
             .Include(c => c.Student)
             .Where(c => c.Coursecode == course)
-            .Select(c => new StudentGrade { Student = c.Student, Grade = c})
+            .Select(c => new Student { Id = c.Studentid, Grades = (ICollection<Grade>)c })
             .ToListAsync();
     }
+
+    //public async Task<List<StudentGrade>> InCourse(string course) {
+    //    return await Grades
+    //        .Include(c => c.Student)
+    //        .Where(c => c.Coursecode == course)
+    //        .Select(c => new StudentGrade { Student = c.Student, Grade = c })
+    //        .ToListAsync();
+    //}
 
     public async Task<List<StudentGradeCourse>> AboveGrade(string grade) {
         return await Grades

@@ -21,8 +21,8 @@
                 <div class="card-body">
                     @foreach (var a in courses) {
                         <div>
-                            <p>Student: @a.Student.Studentname</p>
-                            <p>Grade: @a.Grade.Grade1</p>
+                            <p>Student: @a.Id</p>
+                            <p>Grade: @a.Grades</p>
                         </div>
                     }
                 </div>
@@ -32,7 +32,7 @@
 </div>
 
 @code {
-    private List<Models.StudentGrade> courses;
+    private List<Models.Student> courses;
 
     private List<Models.Course> _courses = new List<Models.Course>();
 
